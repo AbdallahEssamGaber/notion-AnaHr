@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+var cron = require("node-cron");
 const { Client } = require("@notionhq/client");
 dotenv.config();
 
@@ -14,10 +15,12 @@ const pageId = process.env.NOTION_PAGE_ID;
 let anaHrItems = [];
 
 app.get("/", (req, res) => {
-  setInitialTaskPageIdToStatusMap().then(() => {
-    setInterval(findNewAnaHrPage, 5000);
+  setInitialTaskPageIdToStatusMap();
+  cron.schedule("*/5 * * * * *", () => {
+    findNewAnaHrPage();
   });
-  res.send("Express on Vercel");
+
+  res.send("Express on Render");
 });
 
 /**
